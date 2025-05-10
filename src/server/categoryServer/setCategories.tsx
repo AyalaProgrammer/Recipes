@@ -1,0 +1,28 @@
+// import axios from "axios"
+
+// export const setCategories = () => {
+//     return dispatch => {
+//         axios.get("http://localhost:8080/api/category").then((x) => {
+//             dispatch({ type: 'SET_CATEGORIES', payload: x.data })
+//         })
+//             .catch(err => console.log(err))
+//     }
+// }
+
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+
+export const setCategories = createAsyncThunk("categories/setCategories", async () => {
+    const response = await axios.get("http://localhost:8080/api/categories");
+    return response.data;
+  });
+// export const setCategories = () => {
+//     return (dispatch: Dispatch<SetCategoriesAction>) => {
+//         axios.get<Category[]>("http://localhost:8080/api/category")
+//             .then((response) => {
+//                 dispatch({ type: 'SET_CATEGORIES', payload: response.data });
+//             })
+//             .catch(err => console.error(err));
+//     };
+// };

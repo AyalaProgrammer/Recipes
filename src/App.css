@@ -1,0 +1,49 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+  border-bottom: 8px solid #c62026;
+
+}
+
+.login2 {
+  border-bottom: 8px solid #c62026;
+}
+
+.my-img {
+  background-image: url('../images/logo.png');
+  border-radius: 50%;
+  background-size: 100%;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+  height: 75px;
+  width: 75px;
+  margin-left: 20px;
+}
+
+.detailes {
+  height: 100%;
+}
+
+.addRecipe {
+  height: 100%;
+}
+
+.text {
+  font-weight: bold;
+  margin-top: -30px;
+}
