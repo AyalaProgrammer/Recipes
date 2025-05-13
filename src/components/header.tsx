@@ -96,6 +96,11 @@ const Header: React.FC = () => {
                     <Link to="/categories">קטגוריות</Link>
                     <div>|</div>
                     <Link to="/displayList">הקניות שלי</Link>
+                     <div>|</div>
+                    <Link to="/login">התחברות</Link>
+                    <div>|</div>
+                    <Link to="/sighin">הרשמה</Link>
+                    <div>|</div>
                 </div>
 
                 <div className="App-header">

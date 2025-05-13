@@ -203,7 +203,10 @@ const mainSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(setCategories.fulfilled, (state, action) => {
-      state.categories = action.payload as { Id: number; Name: string }[];
+      state.categories = (action.payload as unknown as any[]).map(item => ({
+        Id: item.Id,
+        Name: item.Name,
+      }));
     });
     builder.addCase(setRecipes.fulfilled, (state, action) => {
       state.recipes = action.payload;

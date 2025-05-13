@@ -118,14 +118,50 @@
 // export default store;
 
 // // עוד גירסה
+// import { configureStore } from "@reduxjs/toolkit";
+// import reducer from "./reducer"; // ← שימוש ב-reducer הראשי
+// import shoppingReducer from "./shoppingReducer"; // ייבוא ה-reducer של רשימת הקניות
+
+// export const store = configureStore({
+//   reducer: {
+//     main: reducer, // ← ה-reducer הראשי
+//     toShopping: shoppingReducer, // ← ה-reducer של רשימת הקניות
+//   },
+// });
+
+// export type RootState = ReturnType<typeof store.getState>;
+// export type AppDispatch = typeof store.dispatch;
+
+// export default store;
+
+// // גירסה נוספת
+// import { configureStore } from "@reduxjs/toolkit";
+// import categoriesReducer from "../store/categoriesSlice"; // ייבוא ה-Slice של קטגוריות
+// import recipesReducer from "../store/recipesSlice"; // ייבוא ה-Slice של מתכונים
+
+// export const store = configureStore({
+//   reducer: {
+//     categories: categoriesReducer,
+//     recipes: recipesReducer,
+//   },
+// });
+
+// export type RootState = ReturnType<typeof store.getState>;
+// export type AppDispatch = typeof store.dispatch;
+
+// export default store;
+
+// // גירסה נוספת
 import { configureStore } from "@reduxjs/toolkit";
-import reducer from "./reducer"; // ← שימוש ב-reducer הראשי
-import shoppingReducer from "./shoppingReducer"; // ייבוא ה-reducer של רשימת הקניות
+import categoriesReducer from "../store/categoriesSlice"; // ייבוא ה-Slice של קטגוריות
+import recipesReducer from "../store/recipesSlice"; // ייבוא ה-Slice של מתכונים
+import userReducer from "./userSlice"; // ייבוא ה-Slice של משתמשים
 
 export const store = configureStore({
   reducer: {
-    main: reducer, // ← ה-reducer הראשי
-    toShopping: shoppingReducer, // ← ה-reducer של רשימת הקניות
+    categories: categoriesReducer,
+    recipes: recipesReducer,
+    user: userReducer, // הוספת ה-Slice של המשתמשים
   },
 });
 

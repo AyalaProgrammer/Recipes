@@ -897,6 +897,1136 @@
 // export default AddRecipes;
 
 //גירסה נוספת
+// import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
+// import { yupResolver } from "@hookform/resolvers/yup";
+// import * as yup from "yup";
+// import { useDispatch, useSelector } from "react-redux";
+// import { useLocation, useNavigate } from "react-router-dom";
+// import { FormControl, IconButton, Input, InputLabel, Select, MenuItem } from "@mui/material";
+// import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+// import addNewRecipes from "../../server/recipeServer/addNewRecipe";
+// import editRecipe from "../../server/recipeServer/editRecipe";
+// import type { AppDispatch } from "../../store";
+
+// interface Ingredient {
+//   Name: string;
+//   Count: string;
+//   Type: string;
+// }
+
+// interface Instruction {
+//   Step: string;
+// }
+
+// interface FormData {
+//   Name: string;
+//   CategoryId: number;
+//   Img: string;
+//   Duration: string;
+//   Difficulty: number;
+//   Description: string;
+//   Ingredients: Ingredient[];
+//   Instructions: Instruction[];
+//   UserId?: string;
+// }
+
+// const schema = yup
+//   .object({
+//     Name: yup.string().required("שדה חובה"),
+//     CategoryId: yup.number().required("שדה חובה"),
+//     Img: yup.string().required("שדה חובה"),
+//     Duration: yup.string().required("שדה חובה"),
+//     Difficulty: yup.number().positive().required("שדה חובה"),
+//     Description: yup.string().required("שדה חובה"),
+//     Ingredients: yup.array().of(
+//       yup.object().shape({
+//         Name: yup.string().required("שדה חובה"),
+//         Count: yup.string().required("שדה חובה"),
+//         Type: yup.string().required("שדה חובה"),
+//       })
+//     ).required(),
+//     Instructions: yup.array().of(
+//       yup.object().shape({
+//         Step: yup.string().required("שדה חובה"),
+//       })
+//     ).required(),
+//   })
+//   .required();
+
+// const AddRecipes: React.FC = () => {
+//   const { state } = useLocation();
+//   const recipe = state?.recipe;
+//   const user = useSelector((state: any) => state.user);
+//   const categories = useSelector((state: any) => state.categories);
+//   const dispatch = useDispatch<AppDispatch>();
+//   const navig = useNavigate();
+
+//   const {
+//     register,
+//     handleSubmit,
+//     formState: { errors },
+//     control,
+//   } = useForm<FormData>({
+//     resolver: yupResolver(schema),
+//     defaultValues: recipe,
+//   });
+
+//   const onSubmit: SubmitHandler<FormData> = (data) => {
+//     const recipeData = {
+//       title: data.Name,
+//       ingredients: data.Ingredients.map((ingredient) => ({
+//         Name: ingredient.Name,
+//         Count: ingredient.Count,
+//         Type: ingredient.Type,
+//       })),
+//       instructions: data.Instructions.map((instruction) => instruction.Step),
+//       categoryId: data.CategoryId,
+//       img: data.Img,
+//       duration: data.Duration,
+//       difficulty: data.Difficulty,
+//       description: data.Description,
+//       userId: user.Id,
+//     };
+
+//     if (state) {
+//       dispatch(editRecipe(recipeData, navig));
+//     } else {
+//       dispatch(addNewRecipes(recipeData, navig));
+//     }
+//   };
+
+//   const { fields: fieldsIngredient, append: appendIngredient, remove: removeIngredient } = useFieldArray({
+//     control,
+//     name: "Ingredients",
+//   });
+
+//   const { fields: fieldsInstructions, append: appendInstructions, remove: removeInstructions } = useFieldArray({
+//     control,
+//     name: "Instructions",
+//   });
+
+//   return (
+//     <div className="background-img backgroundPage addRecipe">
+//       <form onSubmit={handleSubmit(onSubmit)}>
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel>שם</InputLabel>
+//           <Input {...register("Name")} />
+//           <p>{errors.Name?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 185 }}>
+//           <InputLabel>קטגוריה</InputLabel>
+//           <Select {...register("CategoryId")}>
+//             <MenuItem value="">
+//               <em>None</em>
+//             </MenuItem>
+//             {categories?.map((category: { Id: number; Name: string }) => (
+//               <MenuItem key={category.Id} value={category.Id}>
+//                 {category.Name}
+//               </MenuItem>
+//             ))}
+//           </Select>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel>תמונה</InputLabel>
+//           <Input {...register("Img")} />
+//           <p>{errors.Img?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+//           <InputLabel>זמן הכנה</InputLabel>
+//           <Input {...register("Duration")} type="number" />
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 185 }}>
+//           <InputLabel>רמת קושי</InputLabel>
+//           <Select {...register("Difficulty")}>
+//             <MenuItem value={1}>קל</MenuItem>
+//             <MenuItem value={2}>בינוני</MenuItem>
+//             <MenuItem value={3}>קשה</MenuItem>
+//           </Select>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel>תיאור</InputLabel>
+//           <Input {...register("Description")} />
+//           <p>{errors.Description?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         {fieldsIngredient.map((field, index) => (
+//           <div key={field.id}>
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>סוג</InputLabel>
+//               <Input {...register(`Ingredients.${index}.Type`)} />
+//               <p>{errors.Ingredients?.[index]?.Type?.message}</p>
+//             </FormControl>
+
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>כמות</InputLabel>
+//               <Input {...register(`Ingredients.${index}.Count`)} />
+//               <p>{errors.Ingredients?.[index]?.Count?.message}</p>
+//             </FormControl>
+
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>שם מוצר</InputLabel>
+//               <Input {...register(`Ingredients.${index}.Name`)} />
+//               <p>{errors.Ingredients?.[index]?.Name?.message}</p>
+//             </FormControl>
+
+//             <IconButton onClick={() => removeIngredient(index)}>
+//               <DeleteForeverIcon />
+//             </IconButton>
+//           </div>
+//         ))}
+//         <button type="button" onClick={() => appendIngredient({ Name: "", Count: "", Type: "" })}>
+//           הוסף מוצר
+//         </button>
+//         <br />
+
+//         {fieldsInstructions.map((field, index) => (
+//           <div key={field.id}>
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>הוראה</InputLabel>
+//               <Input {...register(`Instructions.${index}.Step`)} />
+//               <p>{errors.Instructions?.[index]?.Step?.message}</p>
+//             </FormControl>
+
+//             <IconButton onClick={() => removeInstructions(index)}>
+//               <DeleteForeverIcon />
+//             </IconButton>
+//           </div>
+//         ))}
+//         <button type="button" onClick={() => appendInstructions({ Step: "" })}>
+//           הוסף הוראה
+//         </button>
+//         <br />
+
+//         <Input type="submit" />
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default AddRecipes;
+
+//עוד גירסה אבל
+// import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
+// import { yupResolver } from "@hookform/resolvers/yup";
+// import * as yup from "yup";
+// import { useDispatch, useSelector } from "react-redux";
+// import { useLocation, useNavigate } from "react-router-dom";
+// import { FormControl, IconButton, Input, InputLabel, Select, MenuItem } from "@mui/material";
+// import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+// import addNewRecipes from "../../server/recipeServer/addNewRecipe";
+// import editRecipe from "../../server/recipeServer/editRecipe";
+// import type { AppDispatch } from "../../store";
+
+// interface Ingredient {
+//   Name: string;
+//   Count: string;
+//   Type: string;
+// }
+
+// interface Instruction {
+//   Step: string;
+// }
+
+// interface FormData {
+//   Name: string;
+//   CategoryId: number;
+//   Img: string;
+//   Duration: string;
+//   Difficulty: number;
+//   Description: string;
+//   Ingredients: Ingredient[];
+//   Instructions: Instruction[];
+//   UserId?: string;
+// }
+
+// const schema = yup
+//   .object({
+//     Name: yup.string().required("שדה חובה"),
+//     CategoryId: yup.number().required("שדה חובה"),
+//     Img: yup.string().required("שדה חובה"),
+//     Duration: yup.string().required("שדה חובה"),
+//     Difficulty: yup.number().positive().required("שדה חובה"),
+//     Description: yup.string().required("שדה חובה"),
+//     Ingredients: yup.array().of(
+//       yup.object().shape({
+//         Name: yup.string().required("שדה חובה"),
+//         Count: yup.string().required("שדה חובה"),
+//         Type: yup.string().required("שדה חובה"),
+//       })
+//     ).required(),
+//     Instructions: yup.array().of(
+//       yup.object().shape({
+//         Step: yup.string().required("שדה חובה"),
+//       })
+//     ).required(),
+//   })
+//   .required();
+
+// const AddRecipes: React.FC = () => {
+//   const { state } = useLocation();
+//   const recipe = state?.recipe;
+//   const user = useSelector((state: any) => state.user);
+//   const categories = useSelector((state: any) => state.categories) || []; // הגדרת ערך ברירת מחדל
+//   const dispatch = useDispatch<AppDispatch>();
+//   const navig = useNavigate();
+
+//   const {
+//     register,
+//     handleSubmit,
+//     formState: { errors },
+//     control,
+//   } = useForm<FormData>({
+//     resolver: yupResolver(schema),
+//     defaultValues: recipe,
+//   });
+
+//   const onSubmit: SubmitHandler<FormData> = (data) => {
+//     const recipeData = {
+//       title: data.Name,
+//       ingredients: data.Ingredients.map((ingredient) => ({
+//         Name: ingredient.Name,
+//         Count: ingredient.Count,
+//         Type: ingredient.Type,
+//       })),
+//       instructions: data.Instructions.map((instruction) => instruction.Step),
+//       categoryId: data.CategoryId,
+//       img: data.Img,
+//       duration: data.Duration,
+//       difficulty: data.Difficulty,
+//       description: data.Description,
+//       userId: user.Id,
+//     };
+
+//     if (state) {
+//       dispatch(editRecipe(recipeData, navig));
+//     } else {
+//       dispatch(addNewRecipes(recipeData, navig));
+//     }
+//   };
+
+//   const { fields: fieldsIngredient, append: appendIngredient, remove: removeIngredient } = useFieldArray({
+//     control,
+//     name: "Ingredients",
+//   });
+
+//   const { fields: fieldsInstructions, append: appendInstructions, remove: removeInstructions } = useFieldArray({
+//     control,
+//     name: "Instructions",
+//   });
+
+//   return (
+//     <div className="background-img backgroundPage addRecipe">
+//       <form onSubmit={handleSubmit(onSubmit)}>
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel>שם</InputLabel>
+//           <Input {...register("Name")} />
+//           <p>{errors.Name?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 185 }}>
+//           <InputLabel>קטגוריה</InputLabel>
+//           <Select {...register("CategoryId")}>
+//             <MenuItem value="">
+//               <em>None</em>
+//             </MenuItem>
+//             {Array.isArray(categories) && categories.map((category: { Id: number; Name: string }) => ( // בדיקה אם categories הוא מערך
+//               <MenuItem key={category.Id} value={category.Id}>
+//                 {category.Name}
+//               </MenuItem>
+//             ))}
+//           </Select>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel>תמונה</InputLabel>
+//           <Input {...register("Img")} />
+//           <p>{errors.Img?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+//           <InputLabel>זמן הכנה</InputLabel>
+//           <Input {...register("Duration")} type="number" />
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 185 }}>
+//           <InputLabel>רמת קושי</InputLabel>
+//           <Select {...register("Difficulty")}>
+//             <MenuItem value={1}>קל</MenuItem>
+//             <MenuItem value={2}>בינוני</MenuItem>
+//             <MenuItem value={3}>קשה</MenuItem>
+//           </Select>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel>תיאור</InputLabel>
+//           <Input {...register("Description")} />
+//           <p>{errors.Description?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         {fieldsIngredient.map((field, index) => (
+//           <div key={field.id}>
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>סוג</InputLabel>
+//               <Input {...register(`Ingredients.${index}.Type`)} />
+//               <p>{errors.Ingredients?.[index]?.Type?.message}</p>
+//             </FormControl>
+
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>כמות</InputLabel>
+//               <Input {...register(`Ingredients.${index}.Count`)} />
+//               <p>{errors.Ingredients?.[index]?.Count?.message}</p>
+//             </FormControl>
+
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>שם מוצר</InputLabel>
+//               <Input {...register(`Ingredients.${index}.Name`)} />
+//               <p>{errors.Ingredients?.[index]?.Name?.message}</p>
+//             </FormControl>
+
+//             <IconButton onClick={() => removeIngredient(index)}>
+//               <DeleteForeverIcon />
+//             </IconButton>
+//           </div>
+//         ))}
+//         <button type="button" onClick={() => appendIngredient({ Name: "", Count: "", Type: "" })}>
+//           הוסף מוצר
+//         </button>
+//         <br />
+
+//         {fieldsInstructions.map((field, index) => (
+//           <div key={field.id}>
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>הוראה</InputLabel>
+//               <Input {...register(`Instructions.${index}.Step`)} />
+//               <p>{errors.Instructions?.[index]?.Step?.message}</p>
+//             </FormControl>
+
+//             <IconButton onClick={() => removeInstructions(index)}>
+//               <DeleteForeverIcon />
+//             </IconButton>
+//           </div>
+//         ))}
+//         <button type="button" onClick={() => appendInstructions({ Step: "" })}>
+//           הוסף הוראה
+//         </button>
+//         <br />
+
+//         <Input type="submit" />
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default AddRecipes;
+//עוד גירסה
+// import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
+// import { yupResolver } from "@hookform/resolvers/yup";
+// import * as yup from "yup";
+// import { useDispatch, useSelector } from "react-redux";
+// import { useLocation, useNavigate } from "react-router-dom";
+// import { FormControl, IconButton, Input, InputLabel, Select, MenuItem } from "@mui/material";
+// import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+// import addNewRecipes from "../../server/recipeServer/addNewRecipe";
+// import editRecipe from "../../server/recipeServer/editRecipe";
+// import type { AppDispatch } from "../../store";
+
+// interface Ingredient {
+//   Name: string;
+//   Count: string;
+//   Type: string;
+// }
+
+// interface Instruction {
+//   Step: string;
+// }
+
+// interface FormData {
+//   Name: string;
+//   CategoryId: number;
+//   Img: string;
+//   Duration: string;
+//   Difficulty: number;
+//   Description: string;
+//   Ingredients: Ingredient[];
+//   Instructions: Instruction[];
+//   UserId?: string;
+// }
+
+// const schema = yup
+//   .object({
+//     Name: yup.string().required("שדה חובה"),
+//     CategoryId: yup.number().required("שדה חובה"),
+//     Img: yup.string().required("שדה חובה"),
+//     Duration: yup.string().required("שדה חובה"),
+//     Difficulty: yup.number().positive().required("שדה חובה"),
+//     Description: yup.string().required("שדה חובה"),
+//     Ingredients: yup.array().of(
+//       yup.object().shape({
+//         Name: yup.string().required("שדה חובה"),
+//         Count: yup.string().required("שדה חובה"),
+//         Type: yup.string().required("שדה חובה"),
+//       })
+//     ).required(),
+//     Instructions: yup.array().of(
+//       yup.object().shape({
+//         Step: yup.string().required("שדה חובה"),
+//       })
+//     ).required(),
+//   })
+//   .required();
+
+// const AddRecipes: React.FC = () => {
+//   const { state } = useLocation();
+//   const recipe = state?.recipe;
+//   const user = useSelector((state: any) => state.user);
+//   const categories = useSelector((state: any) => state.categories) || [];
+//   const dispatch = useDispatch<AppDispatch>();
+//   const navig = useNavigate();
+
+//   const {
+//     register,
+//     handleSubmit,
+//     formState: { errors },
+//     control,
+//     setValue,
+//   } = useForm<FormData>({
+//     resolver: yupResolver(schema),
+//     defaultValues: {
+//       Name: recipe?.Name || '',
+//       CategoryId: recipe?.CategoryId || '', // הגדרת ערך ברירת מחדל
+//       Img: recipe?.Img || '',
+//       Duration: recipe?.Duration || '',
+//       Difficulty: recipe?.Difficulty || '', // הגדרת ערך ברירת מחדל
+//       Description: recipe?.Description || '',
+//       Ingredients: recipe?.Ingredients || [],
+//       Instructions: recipe?.Instructions || [],
+//     },
+//   });
+
+//   const onSubmit: SubmitHandler<FormData> = (data) => {
+//     const recipeData = {
+//       title: data.Name,
+//       ingredients: data.Ingredients.map((ingredient) => ({
+//         Name: ingredient.Name,
+//         Count: ingredient.Count,
+//         Type: ingredient.Type,
+//       })),
+//       instructions: data.Instructions.map((instruction) => instruction.Step),
+//       categoryId: data.CategoryId,
+//       img: data.Img,
+//       duration: data.Duration,
+//       difficulty: data.Difficulty,
+//       description: data.Description,
+//       userId: user.Id,
+//     };
+
+//     if (state) {
+//       dispatch(editRecipe(recipeData, navig));
+//     } else {
+//       dispatch(addNewRecipes(recipeData, navig));
+//     }
+//   };
+
+//   const { fields: fieldsIngredient, append: appendIngredient, remove: removeIngredient } = useFieldArray({
+//     control,
+//     name: "Ingredients",
+//   });
+
+//   const { fields: fieldsInstructions, append: appendInstructions, remove: removeInstructions } = useFieldArray({
+//     control,
+//     name: "Instructions",
+//   });
+
+//   return (
+//     <div className="background-img backgroundPage addRecipe">
+//       <form onSubmit={handleSubmit(onSubmit)}>
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel>שם</InputLabel>
+//           <Input {...register("Name")} />
+//           <p>{errors.Name?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 185 }}>
+//           <InputLabel>קטגוריה</InputLabel>
+//           <Select {...register("CategoryId")} defaultValue={recipe?.CategoryId || ''}>
+//             <MenuItem value="">
+//               <em>None</em>
+//             </MenuItem>
+//             {Array.isArray(categories) && categories.map((category: { Id: number; Name: string }) => (
+//               <MenuItem key={category.Id} value={category.Id}>
+//                 {category.Name}
+//               </MenuItem>
+//             ))}
+//           </Select>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel>תמונה</InputLabel>
+//           <Input {...register("Img")} />
+//           <p>{errors.Img?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+//           <InputLabel>זמן הכנה</InputLabel>
+//           <Input {...register("Duration")} type="number" />
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 185 }}>
+//           <InputLabel>רמת קושי</InputLabel>
+//           <Select {...register("Difficulty")} defaultValue={recipe?.Difficulty || ''}>
+//             <MenuItem value={1}>קל</MenuItem>
+//             <MenuItem value={2}>בינוני</MenuItem>
+//             <MenuItem value={3}>קשה</MenuItem>
+//           </Select>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel>תיאור</InputLabel>
+//           <Input {...register("Description")} />
+//           <p>{errors.Description?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         {fieldsIngredient.map((field, index) => (
+//           <div key={field.id}>
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>סוג</InputLabel>
+//               <Input {...register(`Ingredients.${index}.Type`)} />
+//               <p>{errors.Ingredients?.[index]?.Type?.message}</p>
+//             </FormControl>
+
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>כמות</InputLabel>
+//               <Input {...register(`Ingredients.${index}.Count`)} />
+//               <p>{errors.Ingredients?.[index]?.Count?.message}</p>
+//             </FormControl>
+
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>שם מוצר</InputLabel>
+//               <Input {...register(`Ingredients.${index}.Name`)} />
+//               <p>{errors.Ingredients?.[index]?.Name?.message}</p>
+//             </FormControl>
+
+//             <IconButton onClick={() => removeIngredient(index)}>
+//               <DeleteForeverIcon />
+//             </IconButton>
+//           </div>
+//         ))}
+//         <button type="button" onClick={() => appendIngredient({ Name: "", Count: "", Type: "" })}>
+//           הוסף מוצר
+//         </button>
+//         <br />
+
+//         {fieldsInstructions.map((field, index) => (
+//           <div key={field.id}>
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>הוראה</InputLabel>
+//               <Input {...register(`Instructions.${index}.Step`)} />
+//               <p>{errors.Instructions?.[index]?.Step?.message}</p>
+//             </FormControl>
+
+//             <IconButton onClick={() => removeInstructions(index)}>
+//               <DeleteForeverIcon />
+//             </IconButton>
+//           </div>
+//         ))}
+//         <button type="button" onClick={() => appendInstructions({ Step: "" })}>
+//           הוסף הוראה
+//         </button>
+//         <br />
+
+//         <Input type="submit" />
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default AddRecipes;
+//בגירסה שנגמרה כאן לא היו שגיאות אבל שיניתי אותה כיון שלא הצלחתי לבחור קטגוריה
+// import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
+// import { yupResolver } from "@hookform/resolvers/yup";
+// import * as yup from "yup";
+// import { useDispatch, useSelector } from "react-redux";
+// import { useLocation, useNavigate } from "react-router-dom";
+// import { FormControl, IconButton, Input, InputLabel, Select, MenuItem } from "@mui/material";
+// import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+// import addNewRecipes from "../../server/recipeServer/addNewRecipe";
+// import editRecipe from "../../server/recipeServer/editRecipe";
+// import type { AppDispatch } from "../../store";
+
+// interface Ingredient {
+//   Name: string;
+//   Count: string;
+//   Type: string;
+// }
+
+// interface Instruction {
+//   Step: string;
+// }
+
+// interface FormData {
+//   Name: string;
+//   CategoryId: number;
+//   Img: string;
+//   Duration: string;
+//   Difficulty: number;
+//   Description: string;
+//   Ingredients: Ingredient[];
+//   Instructions: Instruction[];
+//   UserId?: string;
+// }
+
+// const schema = yup
+//   .object({
+//     Name: yup.string().required("שדה חובה"),
+//     CategoryId: yup.number().required("שדה חובה"),
+//     Img: yup.string().required("שדה חובה"),
+//     Duration: yup.string().required("שדה חובה"),
+//     Difficulty: yup.number().positive().required("שדה חובה"),
+//     Description: yup.string().required("שדה חובה"),
+//     Ingredients: yup.array().of(
+//       yup.object().shape({
+//         Name: yup.string().required("שדה חובה"),
+//         Count: yup.string().required("שדה חובה"),
+//         Type: yup.string().required("שדה חובה"),
+//       })
+//     ).required(),
+//     Instructions: yup.array().of(
+//       yup.object().shape({
+//         Step: yup.string().required("שדה חובה"),
+//       })
+//     ).required(),
+//   })
+//   .required();
+
+// const AddRecipes: React.FC = () => {
+//   const { state } = useLocation();
+//   const recipe = state?.recipe;
+//   const user = useSelector((state: any) => state.user);
+//   const categories = useSelector((state: any) => state.categories) || [];
+//   const dispatch = useDispatch<AppDispatch>();
+//   const navig = useNavigate();
+
+//   const {
+//     register,
+//     handleSubmit,
+//     formState: { errors },
+//     control,
+//     setValue,
+//   } = useForm<FormData>({
+//     resolver: yupResolver(schema),
+//     defaultValues: {
+//       Name: recipe?.Name || '',
+//       CategoryId: recipe?.CategoryId || 0, // הגדרת ערך ברירת מחדל
+//       Img: recipe?.Img || '',
+//       Duration: recipe?.Duration || '',
+//       Difficulty: recipe?.Difficulty || 1, // הגדרת ערך ברירת מחדל
+//       Description: recipe?.Description || '',
+//       Ingredients: recipe?.Ingredients || [],
+//       Instructions: recipe?.Instructions || [],
+//     },
+//   });
+
+//   const onSubmit: SubmitHandler<FormData> = (data) => {
+//     const recipeData = {
+//       title: data.Name,
+//       ingredients: data.Ingredients.map((ingredient) => ({
+//         Name: ingredient.Name,
+//         Count: ingredient.Count,
+//         Type: ingredient.Type,
+//       })),
+//       instructions: data.Instructions.map((instruction) => instruction.Step),
+//       categoryId: data.CategoryId,
+//       img: data.Img,
+//       duration: data.Duration,
+//       difficulty: data.Difficulty,
+//       description: data.Description,
+//       userId: user.Id,
+//     };
+
+//     if (state) {
+//       dispatch(editRecipe(recipeData, navig));
+//     } else {
+//       dispatch(addNewRecipes(recipeData, navig));
+//     }
+//   };
+
+//   const { fields: fieldsIngredient, append: appendIngredient, remove: removeIngredient } = useFieldArray({
+//     control,
+//     name: "Ingredients",
+//   });
+
+//   const { fields: fieldsInstructions, append: appendInstructions, remove: removeInstructions } = useFieldArray({
+//     control,
+//     name: "Instructions",
+//   });
+
+//   return (
+//     <div className="background-img backgroundPage addRecipe">
+//       <form onSubmit={handleSubmit(onSubmit)}>
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel>שם</InputLabel>
+//           <Input {...register("Name")} />
+//           <p>{errors.Name?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 185 }}>
+//           <InputLabel>קטגוריה</InputLabel>
+//           <Select {...register("CategoryId")} value={recipe?.CategoryId || 0}>
+//             <MenuItem value={0}>
+//               <em>None</em>
+//             </MenuItem>
+//             {Array.isArray(categories) && categories.map((category: { Id: number; Name: string }) => (
+//               <MenuItem key={category.Id} value={category.Id}>
+//                 {category.Name}
+//               </MenuItem>
+//             ))}
+//           </Select>
+//           <p>{errors.CategoryId?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel>תמונה</InputLabel>
+//           <Input {...register("Img")} />
+//           <p>{errors.Img?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+//           <InputLabel>זמן הכנה</InputLabel>
+//           <Input {...register("Duration")} type="number" />
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 185 }}>
+//           <InputLabel>רמת קושי</InputLabel>
+//           <Select {...register("Difficulty")} value={recipe?.Difficulty || 1}>
+//             <MenuItem value={1}>קל</MenuItem>
+//             <MenuItem value={2}>בינוני</MenuItem>
+//             <MenuItem value={3}>קשה</MenuItem>
+//           </Select>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel>תיאור</InputLabel>
+//           <Input {...register("Description")} />
+//           <p>{errors.Description?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         {fieldsIngredient.map((field, index) => (
+//           <div key={field.id}>
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>סוג</InputLabel>
+//               <Input {...register(`Ingredients.${index}.Type`)} />
+//               <p>{errors.Ingredients?.[index]?.Type?.message}</p>
+//             </FormControl>
+
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>כמות</InputLabel>
+//               <Input {...register(`Ingredients.${index}.Count`)} />
+//               <p>{errors.Ingredients?.[index]?.Count?.message}</p>
+//             </FormControl>
+
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>שם מוצר</InputLabel>
+//               <Input {...register(`Ingredients.${index}.Name`)} />
+//               <p>{errors.Ingredients?.[index]?.Name?.message}</p>
+//             </FormControl>
+
+//             <IconButton onClick={() => removeIngredient(index)}>
+//               <DeleteForeverIcon />
+//             </IconButton>
+//           </div>
+//         ))}
+//         <button type="button" onClick={() => appendIngredient({ Name: "", Count: "", Type: "" })}>
+//           הוסף מוצר
+//         </button>
+//         <br />
+
+//         {fieldsInstructions.map((field, index) => (
+//           <div key={field.id}>
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>הוראה</InputLabel>
+//               <Input {...register(`Instructions.${index}.Step`)} />
+//               <p>{errors.Instructions?.[index]?.Step?.message}</p>
+//             </FormControl>
+
+//             <IconButton onClick={() => removeInstructions(index)}>
+//               <DeleteForeverIcon />
+//             </IconButton>
+//           </div>
+//         ))}
+//         <button type="button" onClick={() => appendInstructions({ Step: "" })}>
+//           הוסף הוראה
+//         </button>
+//         <br />
+
+//         <Input type="submit" />
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default AddRecipes;
+//עוד גירסה
+// import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
+// import { yupResolver } from "@hookform/resolvers/yup";
+// import * as yup from "yup";
+// import { useDispatch, useSelector } from "react-redux";
+// import { useLocation, useNavigate } from "react-router-dom";
+// import { FormControl, IconButton, Input, InputLabel, Select, MenuItem } from "@mui/material";
+// import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+// import addNewRecipes from "../../server/recipeServer/addNewRecipe";
+// import editRecipe from "../../server/recipeServer/editRecipe";
+// import type { AppDispatch } from "../../store";
+
+// interface Ingredient {
+//   Name: string;
+//   Count: string;
+//   Type: string;
+// }
+
+// interface Instruction {
+//   Step: string;
+// }
+
+// interface FormData {
+//   Name: string;
+//   CategoryId: number;
+//   Img: string;
+//   Duration: string;
+//   Difficulty: number;
+//   Description: string;
+//   Ingredients: Ingredient[];
+//   Instructions: Instruction[];
+//   UserId?: string;
+// }
+
+// const schema = yup
+//   .object({
+//     Name: yup.string().required("שדה חובה"),
+//     CategoryId: yup.number().required("שדה חובה"),
+//     Img: yup.string().required("שדה חובה"),
+//     Duration: yup.string().required("שדה חובה"),
+//     Difficulty: yup.number().positive().required("שדה חובה"),
+//     Description: yup.string().required("שדה חובה"),
+//     Ingredients: yup.array().of(
+//       yup.object().shape({
+//         Name: yup.string().required("שדה חובה"),
+//         Count: yup.string().required("שדה חובה"),
+//         Type: yup.string().required("שדה חובה"),
+//       })
+//     ).required(),
+//     Instructions: yup.array().of(
+//       yup.object().shape({
+//         Step: yup.string().required("שדה חובה"),
+//       })
+//     ).required(),
+//   })
+//   .required();
+
+// const AddRecipes: React.FC = () => {
+//   const { state } = useLocation();
+//   const recipe = state?.recipe;
+//   const user = useSelector((state: any) => state.user);
+//   const categories = useSelector((state: any) => state.categories) || [];
+//   const dispatch = useDispatch<AppDispatch>();
+//   const navig = useNavigate();
+
+//   const {
+//     register,
+//     handleSubmit,
+//     formState: { errors },
+//     control,
+//     setValue,
+//   } = useForm<FormData>({
+//     resolver: yupResolver(schema),
+//     defaultValues: {
+//       Name: recipe?.Name || '',
+//       CategoryId: recipe?.CategoryId || 0,
+//       Img: recipe?.Img || '',
+//       Duration: recipe?.Duration || '',
+//       Difficulty: recipe?.Difficulty || 1,
+//       Description: recipe?.Description || '',
+//       Ingredients: recipe?.Ingredients || [],
+//       Instructions: recipe?.Instructions || [],
+//     },
+//   });
+
+//   const onSubmit: SubmitHandler<FormData> = (data) => {
+//     const recipeData = {
+//       title: data.Name,
+//       ingredients: data.Ingredients.map((ingredient) => ({
+//         Name: ingredient.Name,
+//         Count: ingredient.Count,
+//         Type: ingredient.Type,
+//       })),
+//       instructions: data.Instructions.map((instruction) => instruction.Step),
+//       categoryId: data.CategoryId,
+//       img: data.Img,
+//       duration: data.Duration,
+//       difficulty: data.Difficulty,
+//       description: data.Description,
+//       userId: user.Id,
+//     };
+
+//     console.log(recipeData); // הוסף שורה זו לבדוק את הנתונים
+
+//     if (state) {
+//       dispatch(editRecipe(recipeData, navig));
+//     } else {
+//       dispatch(addNewRecipes(recipeData, navig));
+//     }
+//   };
+
+//   const { fields: fieldsIngredient, append: appendIngredient, remove: removeIngredient } = useFieldArray({
+//     control,
+//     name: "Ingredients",
+//   });
+
+//   const { fields: fieldsInstructions, append: appendInstructions, remove: removeInstructions } = useFieldArray({
+//     control,
+//     name: "Instructions",
+//   });
+
+//   return (
+//     <div className="background-img backgroundPage addRecipe">
+//       <form onSubmit={handleSubmit(onSubmit)}>
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel>שם</InputLabel>
+//           <Input {...register("Name")} />
+//           <p>{errors.Name?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 185 }}>
+//           <InputLabel>קטגוריה</InputLabel>
+//           <Select {...register("CategoryId")} value={recipe?.CategoryId || 0}>
+//             <MenuItem value={0}>
+//               <em>None</em>
+//             </MenuItem>
+//             {Array.isArray(categories) && categories.map((category: { Id: number; Name: string }) => (
+//               <MenuItem key={category.Id} value={category.Id}>
+//                 {category.Name}
+//               </MenuItem>
+//             ))}
+//           </Select>
+//           <p>{errors.CategoryId?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel>תמונה</InputLabel>
+//           <Input {...register("Img")} />
+//           <p>{errors.Img?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+//           <InputLabel>זמן הכנה</InputLabel>
+//           <Input {...register("Duration")} type="number" />
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 185 }}>
+//           <InputLabel>רמת קושי</InputLabel>
+//           <Select {...register("Difficulty")} value={recipe?.Difficulty || 1}>
+//             <MenuItem value={1}>קל</MenuItem>
+//             <MenuItem value={2}>בינוני</MenuItem>
+//             <MenuItem value={3}>קשה</MenuItem>
+//           </Select>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel>תיאור</InputLabel>
+//           <Input {...register("Description")} />
+//           <p>{errors.Description?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         {fieldsIngredient.map((field, index) => (
+//           <div key={field.id}>
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>סוג</InputLabel>
+//               <Input {...register(`Ingredients.${index}.Type`)} />
+//               <p>{errors.Ingredients?.[index]?.Type?.message}</p>
+//             </FormControl>
+
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>כמות</InputLabel>
+//               <Input {...register(`Ingredients.${index}.Count`)} />
+//               <p>{errors.Ingredients?.[index]?.Count?.message}</p>
+//             </FormControl>
+
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>שם מוצר</InputLabel>
+//               <Input {...register(`Ingredients.${index}.Name`)} />
+//               <p>{errors.Ingredients?.[index]?.Name?.message}</p>
+//             </FormControl>
+
+//             <IconButton onClick={() => removeIngredient(index)}>
+//               <DeleteForeverIcon />
+//             </IconButton>
+//           </div>
+//         ))}
+//         <button type="button" onClick={() => appendIngredient({ Name: "", Count: "", Type: "" })}>
+//           הוסף מוצר
+//         </button>
+//         <br />
+
+//         {fieldsInstructions.map((field, index) => (
+//           <div key={field.id}>
+//             <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//               <InputLabel>הוראה</InputLabel>
+//               <Input {...register(`Instructions.${index}.Step`)} />
+//               <p>{errors.Instructions?.[index]?.Step?.message}</p>
+//             </FormControl>
+
+//             <IconButton onClick={() => removeInstructions(index)}>
+//               <DeleteForeverIcon />
+//             </IconButton>
+//           </div>
+//         ))}
+//         <button type="button" onClick={() => appendInstructions({ Step: "" })}>
+//           הוסף הוראה
+//         </button>
+//         <br />
+
+//         <Input type="submit" />
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default AddRecipes;
+//עוד גירסה לתיקון עניין הקטגוריה
 import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -957,7 +2087,7 @@ const AddRecipes: React.FC = () => {
   const { state } = useLocation();
   const recipe = state?.recipe;
   const user = useSelector((state: any) => state.user);
-  const categories = useSelector((state: any) => state.categories);
+  const categories = useSelector((state: any) => state.categories) || [];
   const dispatch = useDispatch<AppDispatch>();
   const navig = useNavigate();
 
@@ -966,9 +2096,19 @@ const AddRecipes: React.FC = () => {
     handleSubmit,
     formState: { errors },
     control,
+    setValue,
   } = useForm<FormData>({
     resolver: yupResolver(schema),
-    defaultValues: recipe,
+    defaultValues: {
+      Name: recipe?.Name || '',
+      CategoryId: recipe?.CategoryId || 0,
+      Img: recipe?.Img || '',
+      Duration: recipe?.Duration || '',
+      Difficulty: recipe?.Difficulty || 1,
+      Description: recipe?.Description || '',
+      Ingredients: recipe?.Ingredients || [],
+      Instructions: recipe?.Instructions || [],
+    },
   });
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
@@ -987,6 +2127,8 @@ const AddRecipes: React.FC = () => {
       description: data.Description,
       userId: user.Id,
     };
+
+    console.log(recipeData); // הוסף שורה זו לבדוק את הנתונים
 
     if (state) {
       dispatch(editRecipe(recipeData, navig));
@@ -1017,16 +2159,17 @@ const AddRecipes: React.FC = () => {
 
         <FormControl variant="standard" sx={{ m: 1, minWidth: 185 }}>
           <InputLabel>קטגוריה</InputLabel>
-          <Select {...register("CategoryId")}>
-            <MenuItem value="">
+          <Select {...register("CategoryId")} defaultValue={recipe?.CategoryId || 0}>
+            <MenuItem value={0}>
               <em>None</em>
             </MenuItem>
-            {categories?.map((category: { Id: number; Name: string }) => (
+            {Array.isArray(categories) && categories.map((category: { Id: number; Name: string }) => (
               <MenuItem key={category.Id} value={category.Id}>
                 {category.Name}
               </MenuItem>
             ))}
           </Select>
+          <p>{errors.CategoryId?.message}</p>
         </FormControl>
         <br />
 
@@ -1045,7 +2188,7 @@ const AddRecipes: React.FC = () => {
 
         <FormControl variant="standard" sx={{ m: 1, minWidth: 185 }}>
           <InputLabel>רמת קושי</InputLabel>
-          <Select {...register("Difficulty")}>
+          <Select {...register("Difficulty")} defaultValue={recipe?.Difficulty || 1}>
             <MenuItem value={1}>קל</MenuItem>
             <MenuItem value={2}>בינוני</MenuItem>
             <MenuItem value={3}>קשה</MenuItem>
@@ -1115,5 +2258,3 @@ const AddRecipes: React.FC = () => {
 };
 
 export default AddRecipes;
-
-//עוד גירסה אבל

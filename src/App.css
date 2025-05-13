@@ -47,3 +47,15 @@
   font-weight: bold;
   margin-top: -30px;
 }
+
+/* מכאן זה הוספה של קומפיילוט יכול להיות שצריך להסיא את זה */
+/* App.css */
+/* .App-header a {
+  color: white;
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+.App-header a:hover {
+  text-decoration: underline;
+} */

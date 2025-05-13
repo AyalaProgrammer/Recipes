@@ -86,7 +86,7 @@ interface AddCategoryAction {
 
 export default function addCategory(data: CategoryData) {
     return (dispatch: Dispatch<AddCategoryAction>) => {
-        axios.post<CategoryData>("http://localhost:8080/api/category", data)
+        axios.post<CategoryData>("http://localhost:8080/api/category")
             .then((response) => {
                 const categoryData = response.data;
                 dispatch({ type: 'ADD_CATEGORIES', payload: categoryData });
@@ -97,6 +97,7 @@ export default function addCategory(data: CategoryData) {
                     showConfirmButton: false,
                     timer: 1500
                 });
+             console.log(categoryData);
             })
             .catch((err) => {
                 console.error(err);

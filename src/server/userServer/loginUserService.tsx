@@ -51,7 +51,7 @@ import swal from "sweetalert";
 import type { Dispatch } from "redux";
 
 interface LoginData {
-  UserName: string;
+  Username: string;
   Password: string;
 }
 
