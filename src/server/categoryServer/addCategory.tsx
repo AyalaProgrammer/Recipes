@@ -70,44 +70,47 @@
 //     };
 // }
 
-import axios from "axios";
-import Swal from "sweetalert2";
-import type { Dispatch } from "redux";
+// 
+// //גירסה נוספת
+import axios from "axios"
+import Swal from "sweetalert2"
+import type { Dispatch } from "redux"
+import { addCategory as addCategoryAction } from "../../store/categoriesSlice"
 
 interface CategoryData {
-    name: string;
-    [key: string]: any; // במידה ויש שדות נוספים
-}
-
-interface AddCategoryAction {
-    type: 'ADD_CATEGORIES';
-    payload: CategoryData;
+  name: string
+  [key: string]: any
 }
 
 export default function addCategory(data: CategoryData) {
-    return (dispatch: Dispatch<AddCategoryAction>) => {
-        axios.post<CategoryData>("http://localhost:8080/api/category")
-            .then((response) => {
-                const categoryData = response.data;
-                dispatch({ type: 'ADD_CATEGORIES', payload: categoryData });
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "הקטגוריה נוספה בהצלחה",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-             console.log(categoryData);
-            })
-            .catch((err) => {
-                console.error(err);
-                Swal.fire({
-                    position: "top-end",
-                    icon: "error",
-                    title: "הקטגוריה קיימת",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            });
-    };
+  console.log("Adding category:", data)
+  return (dispatch: Dispatch) => {
+    axios
+      .post<any>("http://localhost:8080/api/category", data)
+      .then((response) => {
+        const categoryData = {
+          Id: response.data.Id || response.data.id || 0,
+          Name: response.data.Name || response.data.name || "",
+        }
+        dispatch(addCategoryAction(categoryData))
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "הקטגוריה נוספה בהצלחה",
+          showConfirmButton: false,
+          timer: 1500,
+        })
+        console.log("Category added:", categoryData)
+      })
+      .catch((err) => {
+        console.error("Error adding category:", err)
+        Swal.fire({
+          position: "top-end",
+          icon: "error",
+          title: "הקטגוריה קיימת",
+          showConfirmButton: false,
+          timer: 1500,
+        })
+      })
+  }
 }

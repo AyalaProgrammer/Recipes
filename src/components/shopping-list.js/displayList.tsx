@@ -457,6 +457,7 @@ interface ShoppingItem {
 // Define the User interface
 interface User {
   Id: number;
+  Name: string; // Added the 'Name' property to match the required type
   name: string;
   email: string;
 }
@@ -466,8 +467,8 @@ const selectRecipes = (state: RootState) => state.recipes.recipes;
 const selectShoppingList = createSelector(
   [selectRecipes],
   (recipes) => (recipes || []).map(recipe => ({
-    Id: parseInt(recipe.Id, 10),
-    Name: recipe.name || "Unknown",
+    Id: parseInt(String(recipe.Id), 10),
+    Name: recipe.Name || "Unknown",
     Count: 0
   }))
 );
@@ -490,10 +491,10 @@ const DisplayList: React.FC = () => {
           {shopping?.map((item: ShoppingItem) => (
             <tr key={item.Id}>
               <td className="l">
-                <IconButton onClick={() => dispatch(editShopping(item, user!, -1))}>
+                <IconButton onClick={() => dispatch(editShopping({ ...item, Type: "defaultType" }, user!, -1))}>
                   <RemoveIcon />
                 </IconButton>
-                <IconButton onClick={() => dispatch(editShopping(item, user!, 1))}>
+                <IconButton onClick={() => dispatch(editShopping({ ...item, Type: "defaultType" }, user!, 1))}>
                   <AddIcon />
                 </IconButton>
                 <IconButton onClick={() => dispatch(deleteShopping(item))}>

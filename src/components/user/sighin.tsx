@@ -648,111 +648,359 @@
 // export default Sighin;
 
 //עוד גירסה
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { addNewUser } from "../../server/userServer/userService";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../../store";
-import { FormControl, Input, InputLabel } from "@mui/material";
+// import { useForm } from "react-hook-form";
+// import { yupResolver } from "@hookform/resolvers/yup";
+// import * as yup from "yup";
+// import { addNewUser } from "../../server/userServer/userService";
+// import { Link, useNavigate } from "react-router-dom";
+// import { useDispatch } from "react-redux";
+// import type { AppDispatch } from "../../store";
+// import { FormControl, Input, InputLabel } from "@mui/material";
+
+// const schema = yup
+//   .object({
+//     Username: yup.string().required("שם משתמש הוא שדה חובה"),
+//     Password: yup.string().required("סיסמא היא שדה חובה"),
+//     Name: yup.string().required("שם הוא שדה חובה"),
+//     Phone: yup.number().positive().integer().required("טלפון הוא שדה חובה"),
+//     Email: yup.string().email("כתובת מייל לא תקינה").nullable().notRequired(),
+//     Tz: yup.number().positive().integer("תעודת זהות לא תקינה").nullable().notRequired(),
+//   })
+//   .required();
+
+// const Sighin: React.FC = () => {
+//   const dispatch = useDispatch<AppDispatch>();
+//   const navigate = useNavigate();
+//   const {
+//     register,
+//     handleSubmit,
+//     formState: { errors },
+//   } = useForm({
+//     resolver: yupResolver(schema),
+//     defaultValues: {
+//       Username: "",
+//       Password: "",
+//       Name: "",
+//       Phone: undefined,
+//       Email: undefined,
+//       Tz: undefined,
+//     },
+//   });
+
+//   const onSubmit = (data: yup.InferType<typeof schema>) => {
+//     const userDataToSend = {
+//       UserName: data.Username,
+//       Password: data.Password,
+//       Name: data.Name,
+//       Phone: data.Phone,
+//       Email: data.Email === null ? undefined : data.Email,
+//       Tz: data.Tz === null ? undefined : data.Tz,
+//     };
+
+//     dispatch(addNewUser(userDataToSend));
+//     navigate("/Login");
+//   };
+
+//   return (
+//     <div className="background-img backgroundPage">
+//       <form onSubmit={handleSubmit(onSubmit)}>
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel id="demo-simple-input-standard-label">שם משתמש</InputLabel>
+//           <Input {...register("Username")} />
+//           <p>{errors.Username?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel id="demo-simple-input-standard-label">סיסמא</InputLabel>
+//           <Input type="password" {...register("Password")} />
+//           <p>{errors.Password?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel id="demo-simple-input-standard-label">שם</InputLabel>
+//           <Input {...register("Name")} />
+//           <p>{errors.Name?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel id="demo-simple-input-standard-label">טלפון</InputLabel>
+//           <Input type="number" {...register("Phone")} />
+//           <p>{errors.Phone?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel id="demo-simple-input-standard-label">מייל</InputLabel>
+//           <Input type="email" {...register("Email")} />
+//           <p>{errors.Email?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel id="demo-simple-input-standard-label">תעודת זהות</InputLabel>
+//           <Input type="number" {...register("Tz")} />
+//           <p>{errors.Tz?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <input type="submit" className="my-button" />
+//         <br />
+
+//         <Link to={"/login"}>כבר יש לך חשבון? התחבר עכשיו</Link>
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default Sighin;
+
+//גירסה אחרת של וי0
+
+
+// import type React from "react"
+
+// import { useForm } from "react-hook-form"
+// import { yupResolver } from "@hookform/resolvers/yup"
+// import * as yup from "yup"
+// import { addNewUser } from "../../server/userServer/userService"
+// import { Link, useNavigate } from "react-router-dom"
+// import { useDispatch } from "react-redux"
+// import type { AppDispatch } from "../../store"
+// import { FormControl, Input, InputLabel } from "@mui/material"
+
+// const schema = yup
+//   .object({
+//     Username: yup.string().required("שם משתמש הוא שדה חובה"),
+//     Password: yup.string().required("סיסמא היא שדה חובה"),
+//     Name: yup.string().required("שם הוא שדה חובה"),
+//     Phone: yup.number().positive().integer().required("טלפון הוא שדה חובה"),
+//     Email: yup.string().email("כתובת מייל לא תקינה").nullable().notRequired(),
+//     Tz: yup.number().positive().integer("תעודת זהות לא תקינה").nullable().notRequired(),
+//   })
+//   .required()
+
+// interface SigninFormData {
+//   Username: string
+//   Password: string
+//   Name: string
+//   Phone: number | undefined
+//   Email: string | undefined
+//   Tz: number | undefined
+// }
+
+// const Sighin: React.FC = () => {
+//   const dispatch = useDispatch<AppDispatch>()
+//   const navigate = useNavigate()
+//   const {
+//     register,
+//     handleSubmit,
+//     formState: { errors },
+//   } = useForm<SigninFormData>({
+//     resolver: yupResolver(schema),
+//     defaultValues: {
+//       Username: "",
+//       Password: "",
+//       Name: "",
+//       Phone: undefined,
+//       Email: undefined,
+//       Tz: undefined,
+//     },
+//   })
+
+//   const onSubmit = (data: SigninFormData) => {
+//     console.log("Registration data:", data)
+//     const userDataToSend = {
+//       UserName: data.Username,
+//       Password: data.Password,
+//       Name: data.Name,
+//       Phone: data.Phone,
+//       Email: data.Email === null ? undefined : data.Email,
+//       Tz: data.Tz === null ? undefined : data.Tz,
+//     }
+
+//     dispatch(addNewUser(userDataToSend))
+//     navigate("/Login")
+//   }
+
+//   return (
+//     <div className="background-img backgroundPage">
+//       <form onSubmit={handleSubmit(onSubmit)}>
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel id="demo-simple-input-standard-label">שם משתמש</InputLabel>
+//           <Input {...register("Username")} />
+//           <p className="error-message">{errors.Username?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel id="demo-simple-input-standard-label">סיסמא</InputLabel>
+//           <Input type="password" {...register("Password")} />
+//           <p className="error-message">{errors.Password?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel id="demo-simple-input-standard-label">שם</InputLabel>
+//           <Input {...register("Name")} />
+//           <p className="error-message">{errors.Name?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel id="demo-simple-input-standard-label">טלפון</InputLabel>
+//           <Input type="number" {...register("Phone")} />
+//           <p className="error-message">{errors.Phone?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel id="demo-simple-input-standard-label">מייל</InputLabel>
+//           <Input type="email" {...register("Email")} />
+//           <p className="error-message">{errors.Email?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
+//           <InputLabel id="demo-simple-input-standard-label">תעודת זהות</InputLabel>
+//           <Input type="number" {...register("Tz")} />
+//           <p className="error-message">{errors.Tz?.message}</p>
+//         </FormControl>
+//         <br />
+
+//         <input type="submit" className="my-button" value="הירשם" />
+//         <br />
+
+//         <Link to={"/login"}>כבר יש לך חשבון? התחבר עכשיו</Link>
+//       </form>
+//     </div>
+//   )
+// }
+
+// export default Sighin
+
+//other version
+"use client"
+
+import type React from "react"
+
+import { useForm } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from "yup"
+import { addNewUser } from "../../server/userServer/userService"
+import { Link, useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import type { AppDispatch } from "../../store"
+import { FormControl, Input, InputLabel } from "@mui/material"
 
 const schema = yup
   .object({
     Username: yup.string().required("שם משתמש הוא שדה חובה"),
     Password: yup.string().required("סיסמא היא שדה חובה"),
     Name: yup.string().required("שם הוא שדה חובה"),
-    Phone: yup.number().positive().integer().required("טלפון הוא שדה חובה"),
-    Email: yup.string().email("כתובת מייל לא תקינה").nullable().notRequired(),
-    Tz: yup.number().positive().integer("תעודת זהות לא תקינה").nullable().notRequired(),
+    Phone: yup.number().typeError("טלפון חייב להיות מספר").positive().integer().required("טלפון הוא שדה חובה"),
+    Email: yup.string().email("כתובת מייל לא תקינה").nullable(),
+    Tz: yup.number().typeError("תעודת זהות חייבת להיות מספר").positive().integer("תעודת זהות לא תקינה").nullable(),
   })
-  .required();
+  .required()
+
+type SigninFormData = {
+  Username: string
+  Password: string
+  Name: string
+  Phone: number
+  Email: string | null
+  Tz: number | null
+}
 
 const Sighin: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
+  } = useForm<SigninFormData>({
+    resolver: yupResolver(schema) as any,
     defaultValues: {
       Username: "",
       Password: "",
       Name: "",
-      Phone: undefined,
-      Email: undefined,
-      Tz: undefined,
+      Phone: 0,
+      Email: null,
+      Tz: null,
     },
-  });
+  })
 
-  const onSubmit = (data: yup.InferType<typeof schema>) => {
+  const onSubmit = (data: SigninFormData) => {
+    console.log("Registration data:", data)
     const userDataToSend = {
       UserName: data.Username,
       Password: data.Password,
       Name: data.Name,
       Phone: data.Phone,
-      Email: data.Email === null ? undefined : data.Email,
-      Tz: data.Tz === null ? undefined : data.Tz,
-    };
+      Email: data.Email || undefined,
+      Tz: data.Tz || undefined,
+    }
 
-    dispatch(addNewUser(userDataToSend));
-    navigate("/Login");
-  };
+    dispatch(addNewUser(userDataToSend))
+    navigate("/Login")
+  }
 
   return (
     <div className="background-img backgroundPage">
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit as any)}>
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
           <InputLabel id="demo-simple-input-standard-label">שם משתמש</InputLabel>
           <Input {...register("Username")} />
-          <p>{errors.Username?.message}</p>
+          <p className="error-message">{errors.Username?.message}</p>
         </FormControl>
         <br />
 
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
           <InputLabel id="demo-simple-input-standard-label">סיסמא</InputLabel>
           <Input type="password" {...register("Password")} />
-          <p>{errors.Password?.message}</p>
+          <p className="error-message">{errors.Password?.message}</p>
         </FormControl>
         <br />
 
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
           <InputLabel id="demo-simple-input-standard-label">שם</InputLabel>
           <Input {...register("Name")} />
-          <p>{errors.Name?.message}</p>
+          <p className="error-message">{errors.Name?.message}</p>
         </FormControl>
         <br />
 
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
           <InputLabel id="demo-simple-input-standard-label">טלפון</InputLabel>
           <Input type="number" {...register("Phone")} />
-          <p>{errors.Phone?.message}</p>
+          <p className="error-message">{errors.Phone?.message}</p>
         </FormControl>
         <br />
 
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
           <InputLabel id="demo-simple-input-standard-label">מייל</InputLabel>
           <Input type="email" {...register("Email")} />
-          <p>{errors.Email?.message}</p>
+          <p className="error-message">{errors.Email?.message}</p>
         </FormControl>
         <br />
 
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120, maxWidth: 185 }}>
           <InputLabel id="demo-simple-input-standard-label">תעודת זהות</InputLabel>
           <Input type="number" {...register("Tz")} />
-          <p>{errors.Tz?.message}</p>
+          <p className="error-message">{errors.Tz?.message}</p>
         </FormControl>
         <br />
 
-        <input type="submit" className="my-button" />
+        <input type="submit" className="my-button" value="הירשם" />
         <br />
 
         <Link to={"/login"}>כבר יש לך חשבון? התחבר עכשיו</Link>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default Sighin;
+export default Sighin

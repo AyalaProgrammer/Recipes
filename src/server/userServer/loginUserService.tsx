@@ -45,36 +45,64 @@
 //   };
 // }
 
-//גירסה נוספת של קומפיילוט
-import axios from "axios";
-import swal from "sweetalert";
-import type { Dispatch } from "redux";
+// //גירסה נוספת של קומפיילוט
+// import axios from "axios";
+// import swal from "sweetalert";
+// import type { Dispatch } from "redux";
+
+// interface LoginData {
+//   Username: string;
+//   Password: string;
+// }
+
+// interface UserData {
+//   Name: string;
+//   [key: string]: any; // במידה ויש שדות נוספים
+// }
+
+// interface SetUserAction {
+//   type: "SET_USER";
+//   payload: UserData;
+// }
+
+// export default function loginUser(data: LoginData) {
+//   return (dispatch: Dispatch<SetUserAction>) => {
+//     axios
+//       .post<UserData>("http://localhost:8080/api/user/login", data) // הוספת טיפוס לתגובה
+//       .then((response) => {
+//         dispatch({ type: "SET_USER", payload: response.data });
+//         swal("ברוך הבא", response.data.Name, "success");
+//       })
+//       .catch(() =>
+//         swal("החיבור נכשל", "שם משתמש או סיסמא אינו תקין", "error")
+//       );
+//   };
+// }
+
+//other
+import axios from "axios"
+import swal from "sweetalert"
+import type { Dispatch } from "redux"
+import { setUser } from "../../store/userSlice"
 
 interface LoginData {
-  Username: string;
-  Password: string;
-}
-
-interface UserData {
-  Name: string;
-  [key: string]: any; // במידה ויש שדות נוספים
-}
-
-interface SetUserAction {
-  type: "SET_USER";
-  payload: UserData;
+  Username: string
+  Password: string
 }
 
 export default function loginUser(data: LoginData) {
-  return (dispatch: Dispatch<SetUserAction>) => {
+  console.log("Login attempt:", data)
+  return (dispatch: Dispatch) => {
     axios
-      .post<UserData>("http://localhost:8080/api/user/login", data) // הוספת טיפוס לתגובה
+      .post<any>("http://localhost:8080/api/user/login", data)
       .then((response) => {
-        dispatch({ type: "SET_USER", payload: response.data });
-        swal("ברוך הבא", response.data.Name, "success");
+        console.log("Login successful:", response.data)
+        dispatch(setUser(response.data))
+        swal("ברוך הבא", response.data.Name, "success")
       })
-      .catch(() =>
+      .catch((error) => {
+        console.error("Login failed:", error)
         swal("החיבור נכשל", "שם משתמש או סיסמא אינו תקין", "error")
-      );
-  };
+      })
+  }
 }

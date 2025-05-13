@@ -16,36 +16,66 @@
 
 //גירסה אחרת של קומפיילוט
 
-import axios from "axios";
-import swal from "sweetalert";
-import type { Dispatch } from "redux";
+// import axios from "axios";
+// import swal from "sweetalert";
+// import type { Dispatch } from "redux";
 
-interface UserData {
-  UserName: string;
-  Password: string;
-  Name: string;
-  Phone: number;
-  Email?: string;
-  Tz?: number;
+// interface UserData {
+//   UserName: string;
+//   Password: string;
+//   Name: string;
+//   Phone: number;
+//   Email?: string;
+//   Tz?: number;
+// }
+
+// interface SetUserAction {
+//   type: "SET_USER";
+//   payload: UserData;
+// }
+
+//  export function addNewUser(data: UserData) {
+//   console.log(data);
+//   return (dispatch: Dispatch<SetUserAction>) => {
+//     axios
+//       .post<UserData>("http://localhost:8080/api/user/sighin", data)
+//       .then((response) => {
+//         dispatch({ type: "SET_USER", payload: response.data });
+//         swal("ברוך הבא", response.data.Name, "success");
+//       })
+//       .catch(() =>
+//         swal("החיבור נכשל", "המידע שנשלח אינו תקין", "error")
+//       );
+//   };
+// }
+
+//other
+import axios from "axios"
+import swal from "sweetalert"
+import type { Dispatch } from "redux"
+import { setUser } from "../../store/userSlice"
+
+export interface UserData {
+  UserName: string
+  Password: string
+  Name: string
+  Phone?: number
+  Email?: string
+  Tz?: number
 }
 
-interface SetUserAction {
-  type: "SET_USER";
-  payload: UserData;
-}
-
- export function addNewUser(data: UserData) {
-  console.log(data);
-  return (dispatch: Dispatch<SetUserAction>) => {
+export function addNewUser(data: UserData) {
+  console.log("Adding new user:", data)
+  return (dispatch: Dispatch) => {
     axios
-      .post<UserData>("http://localhost:8080/api/user/sighin", data)
+      .post<any>("http://localhost:8080/api/user/sighin", data)
       .then((response) => {
-        dispatch({ type: "SET_USER", payload: response.data });
-        swal("ברוך הבא", response.data.Name, "success");
+        dispatch(setUser(response.data))
+        swal("ברוך הבא", response.data.Name, "success")
       })
-      .catch(() =>
+      .catch((error) => {
+        console.error("Error adding user:", error)
         swal("החיבור נכשל", "המידע שנשלח אינו תקין", "error")
-      );
-  };
+      })
+  }
 }
-

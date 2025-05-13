@@ -38,13 +38,29 @@
 // });
 
 //אחר
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+// import { createAsyncThunk } from "@reduxjs/toolkit";
+// import axios from "axios";
 
-export const setCategories = createAsyncThunk<string[]>(
-  "categories/setCategories",
-  async () => {
-    const response = await axios.get<string[]>("http://localhost:8080/api/category");
-    return response.data;
+// export const setCategories = createAsyncThunk<string[]>(
+//   "categories/setCategories",
+//   async () => {
+//     const response = await axios.get<string[]>("http://localhost:8080/api/category");
+//     return response.data;
+//   }
+// );
+
+//other
+import { createAsyncThunk } from "@reduxjs/toolkit"
+import axios from "axios"
+import type { Category } from "../../store/categoriesSlice"
+
+export const setCategories = createAsyncThunk<Category[]>("categories/setCategories", async () => {
+  try {
+    const response = await axios.get<Category[]>("http://localhost:8080/api/category")
+    console.log("Categories fetched:", response.data)
+    return response.data
+  } catch (error) {
+    console.error("Error fetching categories:", error)
+    throw error
   }
-);
+})
