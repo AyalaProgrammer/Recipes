@@ -110,11 +110,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { setCategories } from "../server/categoryServer/setCategories";
+import type { Category } from "../server/categoryServer/categoriesSlice";
+
+// import type { Category } from "../server/categoryServer/setCategories";
 
 const categoriesSlice = createSlice({
   name: "categories",
   initialState: {
-    categories: [] as string[], // Replace 'string[]' with the appropriate type for your categories
+    categories: [] as Category[], // Use Category[] to match the payload type
     loading: false,
     error: null as string | null,
   },
@@ -125,7 +128,7 @@ const categoriesSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(setCategories.fulfilled, (state, action: PayloadAction<string[]>) => {
+      .addCase(setCategories.fulfilled, (state, action: PayloadAction<Category[]>) => {
         state.loading = false;
         state.categories = action.payload; // עדכון הקטגוריות
       })
